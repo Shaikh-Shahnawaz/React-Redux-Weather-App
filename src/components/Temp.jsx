@@ -1,19 +1,19 @@
-// api.openweathermap.org/data/2.5/weather?q=Mumbai&appid=927d898f8894b1be35d93b8c0af62b1e
-
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { getApiData } from "../reducers/reducer";
+import { getApiData, getForecastData } from "../reducers/reducer";
 import "./style.css";
 import WeatherCard from "./WeatherCard";
+import moment from "moment";
 
 function Temp() {
-
-    const dispatch = useDispatch()
+  console.log("date==>>>", moment(1648825200).format());
+  const dispatch = useDispatch();
   const [searchValue, setSearchvalue] = useState("Mumbai"); // Storing the search input value
- // const [tempInfo, setTempInfo] = useState({}); // string all api data here
+  // const [tempInfo, setTempInfo] = useState({}); // string all api data here
 
   async function getWeatherInfo() {
+    // getWeatherForecastInfo()
     try {
       const url = `https://api.openweathermap.org/data/2.5/weather?q=${searchValue}&units=metric&appid=927d898f8894b1be35d93b8c0af62b1e`;
       const res = await axios.get(url);
@@ -52,45 +52,47 @@ function Temp() {
       const nodeUrl = "http://localhost:8040/api/weather/city";
       const nodeRes = await axios.post(nodeUrl, myNewWeatherInfo);
 
-     
-
       // dispatching action
-      dispatch(getApiData(nodeRes.data.data))
+      dispatch(getApiData(nodeRes.data.data));
       // setTempInfo(nodeRes.data.data);
-      getWeatherForecastInfo()
     } catch (error) {
       console.log(error);
     }
   }
 
-  async function getWeatherForecastInfo(){
+  function getWeatherForecastInfo() {
     try {
-      const url = `http://api.openweathermap.org/geo/1.0/direct?q=${searchValue}&limit=5&appid=927d898f8894b1be35d93b8c0af62b1e`
-      const res = await axios.get(url);
-
-      const lat = res.data[0].lat
-      const lon = res.data[0].lon
-
-      if(lat && lon){
-        const forecastUrl = `api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=927d898f8894b1be35d93b8c0af62b1e`
-        var forecastRes = await axios.get(forecastUrl)
-        
-      }
-      
-      console.log('fore cast response ==>>',forecastRes)
-    console.log('latitude longitude==>>',lat,lon)
-    
-    } 
-    
-    catch (error) {
-      
-    }
+      const url = `http://api.openweathermap.org/geo/1.0/direct?q=${searchValue}&limit=5&appid=927d898f8894b1be35d93b8c0af62b1e`;
+      axios
+        .get(url)
+        .then((res) => {
+          const { lat, lon } = res.data[0];
+          return { lat, lon };
+        })
+        .then(({ lat, lon }) => {
+          const forecastUrl = `http://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=927d898f8894b1be35d93b8c0af62b1e`;
+          // const forecastUrl = `api.openweathermap.org/data/2.5/forecast/daily?lat={lat}&lon={lon}&cnt={cnt}&appid={API key}`;
+          return axios.get(forecastUrl);
+        })
+        .then((res) => {
+          const { list, city } = res.data;
+          // dispatching action
+          dispatch(getForecastData({list, city}));
+          // console.log("Inside then block==>>", list, city);
+        });
+    } catch (error) {}
   }
+
+  const handleOnClick = () => {
+    getWeatherInfo();
+    getWeatherForecastInfo();
+  };
 
   useEffect(() => {
     getWeatherInfo();
-    // getWeatherForecastInfo()
-  }, []);
+    getWeatherForecastInfo();
+  }, [])
+  
 
   return (
     <>
@@ -109,7 +111,7 @@ function Temp() {
           />
 
           <button
-            onClick={getWeatherInfo}
+            onClick={handleOnClick}
             className="ms-4 btn btn-dark"
             type="button"
           >
@@ -120,7 +122,7 @@ function Temp() {
 
       {/* temprature card here */}
 
-      <WeatherCard  />
+      <WeatherCard />
     </>
   );
 }
