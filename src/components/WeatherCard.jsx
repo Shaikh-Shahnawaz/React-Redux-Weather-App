@@ -5,7 +5,9 @@ function WeatherCard() {
   const tempInfo = useSelector((state) => state.weather.tempInfoR);
   const forecastData = useSelector((state) => state.weather.forecastData);
   const forecastDetails = useSelector((state) => state.weather.forecastDetails);
-  console.log("===>>> temp jsx", forecastData);
+  // console.log("===>>> temp jsx", forecastData);
+
+
   // for weather mood
   const [weatherState, setWeatherState] = useState("");
 
@@ -179,9 +181,9 @@ function WeatherCard() {
                 {" "}
                 Temperature :{" "}
                 {isCelcius ? (
-                  <p>{tempConverted ? tempConverted : temp}&deg; deg</p>
+                  <p>{tempConverted ? tempConverted : temp}&deg; C</p>
                 ) : (
-                  <p>{tempConverted} F</p>
+                  <p>{(tempConverted).toFixed(2)} F</p>
                 )}{" "}
               </p>
             </b>
@@ -203,12 +205,10 @@ function WeatherCard() {
               <div class="card ms-3 mt-3" style={{ width: "18rem" }}>
                 {/* <img class="card-img-top" src="..." alt="Card image cap"> */}
                 <div class="card-body">
-                  <h5 class="card-title">
-                    {moment(dt_txt).format("LLL")}
-                  </h5>
+                  <h5 class="card-title">{moment(dt_txt).format("LLL")}</h5>
                   <p>
                     <b>Temperature</b>
-                    {((main.temp-32)*5/9).toFixed(2)}&deg;
+                    {(((main.temp - 32) * 5) / 9).toFixed(2)}&deg;
                   </p>
                   <p>
                     <b>Humidity</b>
