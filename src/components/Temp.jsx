@@ -57,14 +57,39 @@ function Temp() {
       // dispatching action
       dispatch(getApiData(nodeRes.data.data))
       // setTempInfo(nodeRes.data.data);
-
+      getWeatherForecastInfo()
     } catch (error) {
       console.log(error);
     }
   }
 
+  async function getWeatherForecastInfo(){
+    try {
+      const url = `http://api.openweathermap.org/geo/1.0/direct?q=${searchValue}&limit=5&appid=927d898f8894b1be35d93b8c0af62b1e`
+      const res = await axios.get(url);
+
+      const lat = res.data[0].lat
+      const lon = res.data[0].lon
+
+      if(lat && lon){
+        const forecastUrl = `api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&appid=927d898f8894b1be35d93b8c0af62b1e`
+        var forecastRes = await axios.get(forecastUrl)
+        
+      }
+      
+      console.log('fore cast response ==>>',forecastRes)
+    console.log('latitude longitude==>>',lat,lon)
+    
+    } 
+    
+    catch (error) {
+      
+    }
+  }
+
   useEffect(() => {
     getWeatherInfo();
+    // getWeatherForecastInfo()
   }, []);
 
   return (

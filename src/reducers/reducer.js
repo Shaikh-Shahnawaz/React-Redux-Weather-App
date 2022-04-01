@@ -13,11 +13,11 @@ export const weatherSlice = createSlice({
     
 
     getApiData:(state,action)=>{
-        console.log('redux data====>>>>',action.payload)
+        // console.log('redux data====>>>>',action.payload)
     
     state.tempInfoR = action.payload
 
-    console.log('redux state data==>>',state.tempInfo)
+    // console.log('redux state data==>>',state.tempInfo)
 }
 
 

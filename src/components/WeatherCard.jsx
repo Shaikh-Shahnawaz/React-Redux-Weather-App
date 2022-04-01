@@ -72,6 +72,8 @@ const tempInfo = useSelector(state=>state.weather.tempInfoR)
     }
   };
 
+  const [showMore,setShowMore] = useState(false)
+
 
   return (
     <div className="d-flex justify-content-around mt-5">
@@ -101,6 +103,16 @@ const tempInfo = useSelector(state=>state.weather.tempInfoR)
             <i className={`wi ${weatherState}`}></i>
           </div>
         </div>
+
+        {showMore? <div style={{textAlign:'start'}} className="">
+        <p><b>Humidity: </b>{humidity}%</p>
+        <p><b>Pressure: </b>{pressure}</p>
+        <p><b>Sunset:</b> {timeStr}</p>
+        <p> <b>Wind speed: </b>{speed} km/hr</p>
+      </div> : '' }
+        <button onClick={()=>setShowMore(!showMore)} className="btn btn-sm btn-dark">{!showMore ?'Show More':'Show Less'}</button>
+     
+      
       </div>
 
       {/* Right Card */}
