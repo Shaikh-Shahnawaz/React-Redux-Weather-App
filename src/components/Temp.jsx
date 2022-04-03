@@ -49,7 +49,7 @@ function Temp() {
         sunset,
       };
 
-      const nodeUrl = "http://localhost:8040/api/weather/city";
+      const nodeUrl = "http://localhost:8080/api/weather/city";
       const nodeRes = await axios.post(nodeUrl, myNewWeatherInfo);
 
       // dispatching action
